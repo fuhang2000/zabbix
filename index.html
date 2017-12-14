@@ -1,385 +1,373 @@
 ﻿<!DOCTYPE html>
 <html lang="zh">
-<head>
-    <!--<meta charset="UTF-8">-->
-    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
-    <meta http-equiv="Cache-Control" content="no-transform">
-    <title>南山区教育局</title>
-    <link rel="stylesheet" href="css/index.css">
-    <!--<script src="js/jquery-2.1.1.min.js"></script>-->
-    <script src="js/zepto.min.js"></script>
-    <script src="js/all.js"></script>
-    
- <script src="js/json2.js"></script>
-	<script type="text/javascript" src="js/jquery-1.7.1.min.js"></script>
-	<script type="text/javascript">
-	var auth;
-	var jsondata={
- "jsonrpc" : "2.0",
- "method" : "user.login",
- "params": {
-"user" :"Admin",
- "password":"admin"
-},
-"id" : 1
-}
-$.ajax({
 
-                type: "POST",
+	<head>
+		<!--<meta charset="UTF-8">-->
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+		<meta http-equiv="Cache-Control" content="no-transform">
+		<title>南山区教育局</title>
+		<link rel="stylesheet" href="css/index.css">
+		<link rel="stylesheet" href="css/zepto.alert.css">
+		<!--<script src="js/jquery-2.1.1.min.js"></script>-->
+		<script src="js/zepto.min.js"></script>
+		<script src="js/all.js"></script>
+		<script type="text/javascript" src="js/zepto.alert.js"></script>
+		<script src="js/json2.js"></script>
+		<!--
+        	作者：2
+        	时间：2017-12-14
+        	描述：
+        <script type="text/javascript" src="js/jquery-2.1.1.min.js"></script>-->
 
-                contentType: "application/json;charset=utf-8",
+		<script type="text/javascript">
+			var auth;
+			// $.dialog();
+			//登陆公共参数
+			var jsondata = {
+				"jsonrpc": "2.0",
+				"method": "user.login",
+				"params": {
+					"user": "Admin",
+					"password": "admin"
+				},
+				"id": 1
+			}
 
-                url: "http://123.207.235.243/api_jsonrpc.php",
+			//登陸獲取令牌
+			$.ajax({
 
-                data: JSON.stringify(jsondata),
+				type: "POST",
 
-                dataType: "json",
+				contentType: "application/json;charset=utf-8",
 
-                complete: function () { 
-                },
+				url: "http://123.207.235.243/api_jsonrpc.php",
 
-                success: function (result) {
-                      auth=result.result;
+				data: JSON.stringify(jsondata),
 
-                },
+				dataType: "json",
 
-                error: function (result, status) { 
-                
-                }
+				complete: function() {},
 
-            });
+				success: function(result) {
+					auth = result.result;
+
+					//获取所有主机名///////////////////////////////////////////////////////////////////////////////////
+					//获取主机
+					var gethostList = {
+						"jsonrpc": "2.0",
+						"method": "hostgroup.get",
+						"params": {
+
+						},
+						"auth": auth,
+						"id": 1
+
+					}
+					$.ajax({
+
+							type: "POST",
+
+							contentType: "application/json;charset=utf-8",
+
+							url: "http://123.207.235.243/api_jsonrpc.php",
+
+							data: JSON.stringify(gethostList),
+
+							dataType: "json",
+
+							complete: function() {},
+
+							success: function(result) {
+
+								//  alert(result.result[1].name)
+								//获取主机名 循环添加到 ul中
+								for(var i = 0; i <= result.result.length; i++) {
+									var industry = result.result[i];
+									$("#myul").append(" <li value=" + industry.name + ">" + industry.name + "</li>");
+								}
+							},
+							error: function(result, status) {
+
+								alert("网络登入错误;")
+
+							}
+
+						})
+						////////////////////////////////////////////////////////////////////////////////////////////////////////////////                     
+
+				},
+
+				error: function(result, status) {
+
+					alert("网络登入错误;")
+
+				}
+
+			});
 		</script>
 
-</head>
-<body>
+	</head>
 
-    <div class="header"><!--头部  固定        开始-->
-        <div class="header-container">
-            <img src="img/nav_icon_school_normal.png">
-            <span id="school">麒麟中学</span>
-            <img id="select" src="img/nav_btn_sign_normal.png" class="header-container-img2">
-            <div id="bg"></div>
-            <ul id="myul">
-                <li>麒麟中学</li>
-                <li>松坪学校</li>
-                <li>前海中学</li>
-                <li>桃源中学</li>
-                <li>南山外国语</li>
-                <li>西丽二中</li>
-                <li>龙珠学校</li>
-                <li>北师大附中</li>
-            </ul>
-        </div>
-    </div>
+	<body>
 
-    <div class="mycontainer"><!--内容-->
-        <div class="mycontainer-contai">
-            <div class="mycontainer-top">
-                <a href="monitoringInformation.html">
-                    <div class="mycontainer-top-left">
-                        <img src="img/home_icon_up.png">
-                        <span class="text1">0</span>
-                        <span class="text2">124.2</span>
-                        <span class="text3">kb/s</span>
-                    </div>
-                    <div class="mycontainer-top-right">
-                        <img src="img/home_icon_down.png">
-                        <span class="text1">00</span>
-                        <span class="text2">14.5</span>
-                        <span class="text3">kb/s</span>
-                    </div>
-                </a>
-            </div>
-            <div class="mycontainer-content">
-                <ul>
-                    <a href="twoStageSwitch.html">
-                    <li class="mycontainer-specific">
-                        <div class="mycontainer-specific-left">
-                            <img src="img/home_icon_switch.png">
-                            <a href="twoStageSwitch.html"><span>教学楼B交换机</span></a>
-                        </div>
-                        <div class="mycontainer-specific-middle">
-                            <img src="img/home_icon_up_green.png">
-                            <span class="text1">124</span>
-                            <span class="text2">kb/s</span>
-                        </div>
-                        <div class="mycontainer-specific-right">
-                            <img src="img/home_icon_down_red.png">
-                            <span class="text1">124</span>
-                            <span class="text2">kb/s</span>
-                        </div>
-                    </li>
-                    </a>
+		<div class="header">
+			<!--头部  固定        开始-->
+			<div class="header-container">
+				<img src="img/nav_icon_school_normal.png">
+				<span id="school">a麒麟中学</span>
+				<img id="select" src="img/nav_btn_sign_normal.png" class="header-container-img2">
+				<div id="bg"></div>
+				<ul id="myul">
+					<li>麒麟中学</li>
 
-                    <li class="mycontainer-specific">
-                        <div class="mycontainer-specific-left">
-                            <img src="img/home_icon_switch.png">
-                            <span>教学楼C交换机</span>
-                        </div>
-                        <div class="mycontainer-specific-middle">
-                            <img src="img/home_icon_up_green.png">
-                            <span class="text1">124</span>
-                            <span class="text2">kb/s</span>
-                        </div>
-                        <div class="mycontainer-specific-right">
-                            <img src="img/home_icon_down_red.png">
-                            <span class="text1">124</span>
-                            <span class="text2">kb/s</span>
-                        </div>
-                    </li>
+				</ul>
+			</div>
+		</div>
 
-                    <li class="mycontainer-specific">
-                        <div class="mycontainer-specific-left">
-                            <img src="img/home_icon_switch.png">
-                            <span>A3机房</span>
-                        </div>
-                        <div class="mycontainer-specific-middle">
-                            <img src="img/home_icon_up_green.png">
-                            <span class="text1">124</span>
-                            <span class="text2">kb/s</span>
-                        </div>
-                        <div class="mycontainer-specific-right">
-                            <img src="img/home_icon_down_red.png">
-                            <span class="text1">124</span>
-                            <span class="text2">kb/s</span>
-                        </div>
-                    </li>
+		<div class="mycontainer">
+			<!--内容-->
+			<div class="mycontainer-contai">
+				<div class="mycontainer-top">
+					<a href="monitoringInformation.html">
+						<div class="mycontainer-top-left">
+							<img src="img/home_icon_up.png">
+							<span class="text1">0</span>
+							<span class="text2">124.2</span>
+							<span class="text3">kb/s</span>
+						</div>
+						<div class="mycontainer-top-right">
+							<img src="img/home_icon_down.png">
+							<span class="text1">00</span>
+							<span class="text2">14.5</span>
+							<span class="text3">kb/s</span>
+						</div>
+					</a>
+				</div>
+				<div class="mycontainer-content">
+					<ul id="hostul">
+						<a href="twoStageSwitch.html">
+							<li class="mycontainer-specific">
+								<div class="mycontainer-specific-left">
+									<img src="img/home_icon_switch.png">
+									<a href="twoStageSwitch.html"><span>教学楼B交换机</span></a>
+								</div>
+								<div class="mycontainer-specific-middle">
+									<img src="img/home_icon_up_green.png">
+									<span class="text1">124</span>
+									<span class="text2">kb/s</span>
+								</div>
+								<div class="mycontainer-specific-right">
+									<img src="img/home_icon_down_red.png">
+									<span class="text1">124</span>
+									<span class="text2">kb/s</span>
+								</div>
+							</li>
+						</a>
 
-                    <li class="mycontainer-specific">
-                        <div class="mycontainer-specific-left">
-                            <img src="img/home_icon_switch.png">
-                            <span>教学楼C交换机</span>
-                        </div>
-                        <div class="mycontainer-specific-middle">
-                            <img src="img/home_icon_up_green.png">
-                            <span class="text1">124</span>
-                            <span class="text2">kb/s</span>
-                        </div>
-                        <div class="mycontainer-specific-right">
-                            <img src="img/home_icon_down_red.png">
-                            <span class="text1">124</span>
-                            <span class="text2">kb/s</span>
-                        </div>
-                    </li>
+					</ul>
 
-                    <li class="mycontainer-specific">
-                        <div class="mycontainer-specific-left">
-                            <img src="img/home_icon_switch.png">
-                            <span>A3机房</span>
-                        </div>
-                        <div class="mycontainer-specific-middle">
-                            <img src="img/home_icon_up_green.png">
-                            <span class="text1">124</span>
-                            <span class="text2">kb/s</span>
-                        </div>
-                        <div class="mycontainer-specific-right">
-                            <img src="img/home_icon_down_red.png">
-                            <span class="text1">124</span>
-                            <span class="text2">kb/s</span>
-                        </div>
-                    </li>
+				</div>
+			</div>
+		</div>
+		<!--内容     结束-->
 
-                    <li class="mycontainer-specific">
-                        <div class="mycontainer-specific-left">
-                            <img src="img/home_icon_switch.png">
-                            <span>教学楼C交换机</span>
-                        </div>
-                        <div class="mycontainer-specific-middle">
-                            <img src="img/home_icon_up_green.png">
-                            <span class="text1">124</span>
-                            <span class="text2">kb/s</span>
-                        </div>
-                        <div class="mycontainer-specific-right">
-                            <img src="img/home_icon_down_red.png">
-                            <span class="text1">124</span>
-                            <span class="text2">kb/s</span>
-                        </div>
-                    </li>
+		<div class="footer">
+			<!--底部 固定  开始-->
+			<div class="footer-container div">
+				<div class="switchboard">
+					<a href="index.html"><img src="img/tab_icon_switch.png">
+						<span>交换机</span></a>
+				</div>
+				<div class="WIFI div">
+					<a href="wifi.html">
+						<img src="img/tab_icon_wifi.png">
+						<span>WIFI</span>
+					</a>
+				</div>
+				<div class="terminal div">
+					<a href="terminal.html">
+						<img src="img/tab_icon_pc.png">
+						<span>终端</span>
+					</a>
+				</div>
+				<div class="alarm-information div">
+					<a href="alarmInformation.html">
+						<img src="img/tab_icon_news.png">
+						<span>告警信息</span>
+					</a>
+				</div>
+			</div>
+		</div>
+		<!--底部   结束-->
 
-                    <li class="mycontainer-specific">
-                        <div class="mycontainer-specific-left">
-                            <img src="img/home_icon_switch.png">
-                            <span>A3机房</span>
-                        </div>
-                        <div class="mycontainer-specific-middle">
-                            <img src="img/home_icon_up_green.png">
-                            <span class="text1">124</span>
-                            <span class="text2">kb/s</span>
-                        </div>
-                        <div class="mycontainer-specific-right">
-                            <img src="img/home_icon_down_red.png">
-                            <span class="text1">124</span>
-                            <span class="text2">kb/s</span>
-                        </div>
-                    </li>
+		<script>
+			var hostname;
+			$('body').on('click', 'ul li', function() {
+				$(this).each(function() {
+					$(this).on('click', function() {
 
-                    <li class="mycontainer-specific">
-                        <div class="mycontainer-specific-left">
-                            <img src="img/home_icon_switch.png">
-                            <span>教学楼C交换机</span>
-                        </div>
-                        <div class="mycontainer-specific-middle">
-                            <img src="img/home_icon_up_green.png">
-                            <span class="text1">124</span>
-                            <span class="text2">kb/s</span>
-                        </div>
-                        <div class="mycontainer-specific-right">
-                            <img src="img/home_icon_down_red.png">
-                            <span class="text1">124</span>
-                            <span class="text2">kb/s</span>
-                        </div>
-                    </li>
+						hostname = $(this).attr("value");
 
-                    <li class="mycontainer-specific">
-                        <div class="mycontainer-specific-left">
-                            <img src="img/home_icon_switch.png">
-                            <span>A3机房</span>
-                        </div>
-                        <div class="mycontainer-specific-middle">
-                            <img src="img/home_icon_up_green.png">
-                            <span class="text1">124</span>
-                            <span class="text2">kb/s</span>
-                        </div>
-                        <div class="mycontainer-specific-right">
-                            <img src="img/home_icon_down_red.png">
-                            <span class="text1">124</span>
-                            <span class="text2">kb/s</span>
-                        </div>
-                    </li>
+						gethostid(); //查詢主机群下 终端
 
-                    <li class="mycontainer-specific">
-                        <div class="mycontainer-specific-left">
-                            <img src="img/home_icon_switch.png">
-                            <span>教学楼C交换机</span>
-                        </div>
-                        <div class="mycontainer-specific-middle">
-                            <img src="img/home_icon_up_green.png">
-                            <span class="text1">124</span>
-                            <span class="text2">kb/s</span>
-                        </div>
-                        <div class="mycontainer-specific-right">
-                            <img src="img/home_icon_down_red.png">
-                            <span class="text1">124</span>
-                            <span class="text2">kb/s</span>
-                        </div>
-                    </li>
+					})
+				})
+			})
 
-                    <li class="mycontainer-specific">
-                        <div class="mycontainer-specific-left">
-                            <img src="img/home_icon_switch.png">
-                            <span>A3机房</span>
-                        </div>
-                        <div class="mycontainer-specific-middle">
-                            <img src="img/home_icon_up_green.png">
-                            <span class="text1">124</span>
-                            <span class="text2">kb/s</span>
-                        </div>
-                        <div class="mycontainer-specific-right">
-                            <img src="img/home_icon_down_red.png">
-                            <span class="text1">124</span>
-                            <span class="text2">kb/s</span>
-                        </div>
-                    </li>
+			//获取hostid 查询出 这个主机的 id 和可见名
+			function gethostid() {
 
-                    <li class="mycontainer-specific">
-                        <div class="mycontainer-specific-left">
-                            <img src="img/home_icon_switch.png">
-                            <span>教学楼C交换机</span>
-                        </div>
-                        <div class="mycontainer-specific-middle">
-                            <img src="img/home_icon_up_green.png">
-                            <span class="text1">124</span>
-                            <span class="text2">kb/s</span>
-                        </div>
-                        <div class="mycontainer-specific-right">
-                            <img src="img/home_icon_down_red.png">
-                            <span class="text1">124</span>
-                            <span class="text2">kb/s</span>
-                        </div>
-                    </li>
+				var gethost = {
+					"jsonrpc": "2.0",
+					"method": "hostgroup.get",
+					"params": {
+						"output": "extend",
+						//条件 : 群主名为 hostname  查询出 这个主机的 id 和可见名
+						"filter": {
+							"name": [
+								hostname
+							]
+						},
+						"selectHosts": ["hostid", "host"]
+					},
+					"auth": auth,
+					"id": 1
 
-                    <li class="mycontainer-specific">
-                        <div class="mycontainer-specific-left">
-                            <img src="img/home_icon_switch.png">
-                            <span>A3机房</span>
-                        </div>
-                        <div class="mycontainer-specific-middle">
-                            <img src="img/home_icon_up_green.png">
-                            <span class="text1">124</span>
-                            <span class="text2">kb/s</span>
-                        </div>
-                        <div class="mycontainer-specific-right">
-                            <img src="img/home_icon_down_red.png">
-                            <span class="text1">124</span>
-                            <span class="text2">kb/s</span>
-                        </div>
-                    </li>
-                </ul>
+				};
 
+				$.ajax({
 
+					type: "post",
 
+					contentType: "application/json;charset=utf-8",
 
-            </div>
-        </div>
-    </div><!--内容     结束-->
+					url: "http://123.207.235.243/api_jsonrpc.php",
 
-     <div class="footer"><!--底部 固定  开始-->
-         <div class="footer-container div">
-             <div class="switchboard">
-                 <a href="index.html" ><img src="img/tab_icon_switch.png">
-                     <span>交换机</span></a>
-             </div>
-             <div class="WIFI div">
-                 <a href="wifi.html" >
-                     <img src="img/tab_icon_wifi.png">
-                     <span>WIFI</span>
-                 </a>
-             </div>
-             <div class="terminal div">
-                 <a href="terminal.html" >
-                     <img src="img/tab_icon_pc.png">
-                     <span>终端</span>
-                 </a>
-             </div>
-             <div class="alarm-information div">
-                 <a href="alarmInformation.html">
-                     <img src="img/tab_icon_news.png">
-                     <span>告警信息</span>
-                 </a>
-             </div>
-         </div>
-     </div><!--底部   结束-->
+					data: JSON.stringify(gethost),
 
+					dataType: "json",
 
+					complete: function() {},
 
-    <script>
-        /*上面选择学校的地方*/
-        $("#select").bind('click',function () {
-//            alert(1);
-            document.getElementById("bg").style.display ="block";
-            document.getElementById("myul").style.display = "block";
-            $("#myul li").bind('click',function () {
-                $("#school").text($(this).text());
-                document.getElementById("bg").style.display ="none";
-                document.getElementById("myul").style.display = "none";
-            });
-        });
-        /*底部导航*/
-        $(function () {
-            $(".footer-container div").eq(0).css({
-               background:"#1e69d2"
-            });
-            $(".footer-container div").click(function () {
-                $(".footer-container div").css({
-                    background: "#1d5cb6"
-                });
-                $(this).css({
-                    background:"#1e69d2"
-                });
-            });
-        });
+					success: function(result) {
 
-    </script>
-</body>
+						//获取主机名 循环添加到 ul中
+						for(var i = 1; i <= result.result.length; i++) {
+
+							alert(result.result.length)
+
+							var industry = result.result[i];
+
+							alert(result.result[0].name);
+
+							for(var j = 0; j <= result.result[0].hosts.length; j++) {
+								var hostName = result.result[0].hosts[j].host;
+
+								var gethostinfo = {
+									"jsonrpc": "2.0",
+									"method": "item.get",
+									"params": {
+										"output": "extend",
+										"hostids": result.result[0].hosts[j].hostid,
+										"search": {
+											"key_": "cpu"
+										},
+										"sortfield": "name"
+									},
+									"auth": auth,
+									"id": 1
+								}
+								$.ajax({
+
+									type: "post",
+
+									contentType: "application/json;charset=utf-8",
+
+									url: "http://123.207.235.243/api_jsonrpc.php",
+
+									data: JSON.stringify(gethost),
+
+									dataType: "json",
+
+									complete: function() {},
+
+									success: function(result) {
+
+										alert(result)
+
+										$("#hostul").append("<a href='twoStageSwitch.html'>"
+
+											+
+											"<li class='mycontainer-specific'>"
+
+											+
+											"<div class='mycontainer-specific-left'>"
+
+											+
+											"<img src='img/home_icon_switch.png'>" +
+											"<a href='twoStageSwitch.html'>" +
+											"<span>" + hostName + "</span></a>" +
+											"	</div>" +
+											"<div class='mycontainer-specific-middle'>" +
+											"<img src='img/home_icon_up_green.png'>" +
+											"<span class='text1'>" + 124 + "</span>" +
+											"<span class='text2'>" + 'kb/s' + "</span>" +
+											"</div>" +
+											"<div class='mycontainer-specific-right'>"
+
+											+
+											"<img src='img/home_icon_down_red.png'>" +
+											"	<span class='text1'>" + 124 + "</span>" +
+											"<span class='text2'>" + 'kb/s' + "</span>" +
+											"</div>" +
+											"</li></a>");
+										//		alert(result.result[0].hosts[j].hostid +result.result[0].hosts[j].host);
+
+									}
+
+								});
+
+							}
+
+						}
+					},
+					error: function(result, status) {
+
+						alert("网络登入错误;")
+
+					}
+
+				})
+
+			}
+
+			/*上面选择学校的地方*/
+			$("#select").bind('click', function() {
+				//            alert(1);
+				document.getElementById("bg").style.display = "block";
+				document.getElementById("myul").style.display = "block";
+				$("#myul li").bind('click', function() {
+					$("#school").text($(this).text());
+					document.getElementById("bg").style.display = "none";
+					document.getElementById("myul").style.display = "none";
+				});
+			});
+			/*底部导航*/
+			$(function() {
+				$(".footer-container div").eq(0).css({
+					background: "#1e69d2"
+				});
+				$(".footer-container div").click(function() {
+					$(".footer-container div").css({
+						background: "#1d5cb6"
+					});
+					$(this).css({
+						background: "#1e69d2"
+					});
+				});
+			});
+		</script>
+	</body>
+
 </html>
