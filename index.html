@@ -201,7 +201,8 @@
 					document.getElementById("myul").style.display = "none";
 
 					if(hostname != "选择主机群") {
-
+                        //清除当前的ul 值
+                        $("#hostul li").remove();
 						gethostid();
 					}
 
