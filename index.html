@@ -251,52 +251,30 @@
 					complete: function() {},
 
 					success: function(result) {
-
+	
 						//获取主机名 循环添加到 ul中
-						for(var i = 1; i <= result.result.length; i++) {
+						for(var i = 0; i <= result.result.length; i++) {
 
-							alert(result.result.length)
+							var invalue;
 
 							var industry = result.result[i];
 
-							alert(result.result[0].name);
-
+							
+                                            //获取主机hostid   result.result[0].hosts 是主机群集合
 							for(var j = 0; j <= result.result[0].hosts.length; j++) {
+								  //终端主机名
 								var hostName = result.result[0].hosts[j].host;
-
-								var gethostinfo = {
-									"jsonrpc": "2.0",
-									"method": "item.get",
-									"params": {
-										"output": "extend",
-										"hostids": result.result[0].hosts[j].hostid,
-										"search": {
-											"key_": "cpu"
-										},
-										"sortfield": "name"
-									},
-									"auth": auth,
-									"id": 1
-								}
-								$.ajax({
-
-									type: "post",
-
-									contentType: "application/json;charset=utf-8",
-
-									url: "http://123.207.235.243/api_jsonrpc.php",
-
-									data: JSON.stringify(gethost),
-
-									dataType: "json",
-
-									complete: function() {},
-
-									success: function(result) {
-
-										alert(result)
-
-										$("#hostul").append("<a href='twoStageSwitch.html'>"
+								
+                                             //主机上行流量值
+                                             
+                                              //主机下行流量值
+                                             var outvalue;
+                                  var sss=i++;
+                                  console.log(result.result[0].hosts[j].hostid)
+                            invalue=  getinvalue(result.result[0].hosts[j].hostid);
+                          
+								alert(invalue);
+													$("#hostul").append("<a href='twoStageSwitch.html'>"
 
 											+
 											"<li class='mycontainer-specific'>"
@@ -311,22 +289,17 @@
 											"	</div>" +
 											"<div class='mycontainer-specific-middle'>" +
 											"<img src='img/home_icon_up_green.png'>" +
-											"<span class='text1'>" + 124 + "</span>" +
+											"<span class='text1'>" + invalue+ "</span>" +
 											"<span class='text2'>" + 'kb/s' + "</span>" +
 											"</div>" +
 											"<div class='mycontainer-specific-right'>"
 
 											+
 											"<img src='img/home_icon_down_red.png'>" +
-											"	<span class='text1'>" + 124 + "</span>" +
+											"	<span class='text1'>" + invalue+1 + "</span>" +
 											"<span class='text2'>" + 'kb/s' + "</span>" +
 											"</div>" +
 											"</li></a>");
-										//		alert(result.result[0].hosts[j].hostid +result.result[0].hosts[j].host);
-
-									}
-
-								});
 
 							}
 
@@ -341,6 +314,7 @@
 				})
 
 			}
+
 
 			/*上面选择学校的地方*/
 			$("#select").bind('click', function() {
@@ -368,6 +342,59 @@
 				});
 			});
 		</script>
+		<script>
+			
+			
+		//获取上行 值
+function getinvalue(hostid ){
+	var gethostinfo = {
+									"jsonrpc": "2.0",
+									"method": "item.get",
+									"params": {
+										"output": "extend",
+										"hostids": 10108,//result.result[0].hosts[j].hostid,
+										"search": {
+											"name": "流量流入"
+										},
+										"sortfield": "name"
+									},
+									"auth": auth,
+									"id": 1
+								}
+								$.ajax({
+
+									type: "post",
+
+									contentType: "application/json;charset=utf-8",
+
+									url: "http://123.207.235.243/api_jsonrpc.php",
+
+									data: JSON.stringify(gethostinfo),
+
+									dataType: "json",
+									async: false,
+
+									complete: function() {},
+
+									success: function(data) {
+										console.log(data)
+										alert(data.result[0].lastvalue);
+                                                        return  data.result[0].lastvalue;
+                                                       
+						
+										//		alert(result.result[0].hosts[j].hostid +result.result[0].hosts[j].host);
+
+									}
+
+								});
+	
+	
+
+	
+	
+	
+}
+</script>
 	</body>
 
 </html>
