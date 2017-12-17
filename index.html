@@ -19,14 +19,9 @@
         	时间：2017-12-14
         	描述：
         <script type="text/javascript" src="js/jquery-2.1.1.min.js"></script>-->
-		<script type="text/javascript">
-			//获取上行 值
 
-			}
-		</script>
 		<script type="text/javascript">
 			var auth;
-
 			// $.dialog();
 			//登陆公共参数
 			var jsondata = {
@@ -51,6 +46,8 @@
 				data: JSON.stringify(jsondata),
 
 				dataType: "json",
+
+				complete: function() {},
 
 				success: function(result) {
 					auth = result.result;
@@ -118,10 +115,11 @@
 			<!--头部  固定        开始-->
 			<div class="header-container">
 				<img src="img/nav_icon_school_normal.png">
-				<span id="school">选择主机群</span>
+				<span id="school">a麒麟中学</span>
 				<img id="select" src="img/nav_btn_sign_normal.png" class="header-container-img2">
 				<div id="bg"></div>
 				<ul id="myul">
+					<li>麒麟中学</li>
 
 				</ul>
 			</div>
@@ -135,19 +133,37 @@
 						<div class="mycontainer-top-left">
 							<img src="img/home_icon_up.png">
 							<span class="text1">0</span>
-							<span class="text2" id="inTotal">0</span>
+							<span class="text2">124.2</span>
 							<span class="text3">kb/s</span>
 						</div>
 						<div class="mycontainer-top-right">
 							<img src="img/home_icon_down.png">
 							<span class="text1">00</span>
-							<span class="text2" id="outTotal">0</span>
+							<span class="text2">14.5</span>
 							<span class="text3">kb/s</span>
 						</div>
 					</a>
 				</div>
 				<div class="mycontainer-content">
 					<ul id="hostul">
+						<a href="twoStageSwitch.html">
+							<li class="mycontainer-specific">
+								<div class="mycontainer-specific-left">
+									<img src="img/home_icon_switch.png">
+									<a href="twoStageSwitch.html"><span>教学楼B交换机</span></a>
+								</div>
+								<div class="mycontainer-specific-middle">
+									<img src="img/home_icon_up_green.png">
+									<span class="text1">124</span>
+									<span class="text2">kb/s</span>
+								</div>
+								<div class="mycontainer-specific-right">
+									<img src="img/home_icon_down_red.png">
+									<span class="text1">124</span>
+									<span class="text2">kb/s</span>
+								</div>
+							</li>
+						</a>
 
 					</ul>
 
@@ -187,19 +203,13 @@
 
 		<script>
 			var hostname;
+			$('body').on('click', 'ul li', function() {
+				$(this).each(function() {
+					$(this).on('click', function() {
 
-			/*上面选择学校的地方*/
-			$("#select").bind('click', function() {
-				//            alert(1);
-				document.getElementById("bg").style.display = "block";
+						hostname = $(this).attr("value");
 
-				document.getElementById("myul").style.display = "block";
-				$("#myul li").bind('click', function() {
-					hostname = $(this).text();
-					$("#school").text($(this).text());
-					document.getElementById("bg").style.display = "none";
-					document.getElementById("myul").style.display = "none";
-
+<<<<<<< HEAD
 					if(hostname != "选择主机群") {
                         //清除当前的ul 值
                         $("#hostul li").remove();
@@ -208,12 +218,17 @@
 
 				});
 			});
+=======
+						gethostid(); //查詢主机群下 终端
+
+					})
+				})
+			})
+>>>>>>> parent of d256b01... 首页完成
 
 			//获取hostid 查询出 这个主机的 id 和可见名
 			function gethostid() {
-				//总流入,出变量
-				var inTotal = 0;
-				var outTotal = 0;
+
 				var gethost = {
 					"jsonrpc": "2.0",
 					"method": "hostgroup.get",
@@ -243,60 +258,63 @@
 					data: JSON.stringify(gethost),
 
 					dataType: "json",
-					async: false,
+
+					complete: function() {},
 
 					success: function(result) {
-
-						//获取学校群名 循环添加到 ul中
+	
+						//获取主机名 循环添加到 ul中
 						for(var i = 0; i <= result.result.length; i++) {
+
+							var invalue;
+
 							var industry = result.result[i];
-							//获取主机hostid   result.result[0].hosts 是学校群集合
+
+							
+                                            //获取主机hostid   result.result[0].hosts 是主机群集合
 							for(var j = 0; j <= result.result[0].hosts.length; j++) {
-								//终端主机名
+								  //终端主机名
 								var hostName = result.result[0].hosts[j].host;
+								
+                                             //主机上行流量值
+                                             
+                                              //主机下行流量值
+                                             var outvalue;
+                                  var sss=i++;
+                                  console.log(result.result[0].hosts[j].hostid)
+                            invalue=  getinvalue(result.result[0].hosts[j].hostid);
+                          
+								alert(invalue);
+													$("#hostul").append("<a href='twoStageSwitch.html'>"
 
-								//主机上行流量值
-								invalue = (getinvalue(result.result[0].hosts[j].hostid) / 1024).toFixed(2);
+											+
+											"<li class='mycontainer-specific'>"
 
-								//主机下行流量值
-								var outvalue;
-								outvalue = (getoutvalue(result.result[0].hosts[j].hostid) / 1024).toFixed(2);
+											+
+											"<div class='mycontainer-specific-left'>"
 
-								inTotal = inTotal + invalue * 1;
+											+
+											"<img src='img/home_icon_switch.png'>" +
+											"<a href='twoStageSwitch.html'>" +
+											"<span>" + hostName + "</span></a>" +
+											"	</div>" +
+											"<div class='mycontainer-specific-middle'>" +
+											"<img src='img/home_icon_up_green.png'>" +
+											"<span class='text1'>" + invalue+ "</span>" +
+											"<span class='text2'>" + 'kb/s' + "</span>" +
+											"</div>" +
+											"<div class='mycontainer-specific-right'>"
 
-								outTotal = outTotal + outvalue * 1;
-
-								$("#hostul").append("<a href='twoStageSwitch.html'>"
-
-									+
-									"<li class='mycontainer-specific'>"
-
-									+
-									"<div class='mycontainer-specific-left'>"
-
-									+
-									"<img src='img/home_icon_switch.png'>" +
-									"<a href='twoStageSwitch.html'>" +
-									"<span>" + hostName + "</span></a>" +
-									"	</div>" +
-									"<div class='mycontainer-specific-middle'>" +
-									"<img src='img/home_icon_up_green.png'>" +
-									"<span class='text1'>" + invalue + "</span>" +
-									"<span class='text2'>" + 'kb/s' + "</span>" +
-									"</div>" +
-									"<div class='mycontainer-specific-right'>"
-
-									+
-									"<img src='img/home_icon_down_red.png'>" +
-									"	<span class='text1'>" + outvalue + "</span>" +
-									"<span class='text2'>" + 'kb/s' + "</span>" +
-									"</div>" +
-									"</li></a>");
+											+
+											"<img src='img/home_icon_down_red.png'>" +
+											"	<span class='text1'>" + invalue+1 + "</span>" +
+											"<span class='text2'>" + 'kb/s' + "</span>" +
+											"</div>" +
+											"</li></a>");
 
 							}
 
 						}
-
 					},
 					error: function(result, status) {
 
@@ -306,119 +324,20 @@
 
 				})
 
-				$("#inTotal").text(inTotal.toFixed(2));
-				$("#outTotal").text(outTotal.toFixed(2));
 			}
 
-			//取上行值方法 
-			function getinvalue(hostid) {
-				var flag;
-				var invalue;
-				var gethostinfo = {
-					"jsonrpc": "2.0",
-					"method": "item.get",
-					"params": {
-						"output": "extend",
-						"hostids": hostid, //result.result[0].hosts[j].hostid,
-						"search": {
-							"key_": "net.if.in"
-						},
-						"sortfield": "name"
-					},
-					"auth": auth,
-					"id": 1
-				}
-				$.ajax({
 
-					type: "post",
-					async: false,
-					contentType: "application/json;charset=utf-8",
-
-					url: "http://123.207.235.243/api_jsonrpc.php",
-
-					data: JSON.stringify(gethostinfo),
-
-					dataType: "json",
-
-					success: function(result) {
-
-						if(result != null) {
-							invalue = result.result[0].lastvalue;
-							flag = true;
-						} else {
-							invalue = "--";
-							flag = false;
-						}
-						//data.result[0].lastvalue;
-
-						//		alert(result.result[0].hosts[j].hostid +result.result[0].hosts[j].host);
-
-					}
-
+			/*上面选择学校的地方*/
+			$("#select").bind('click', function() {
+				//            alert(1);
+				document.getElementById("bg").style.display = "block";
+				document.getElementById("myul").style.display = "block";
+				$("#myul li").bind('click', function() {
+					$("#school").text($(this).text());
+					document.getElementById("bg").style.display = "none";
+					document.getElementById("myul").style.display = "none";
 				});
-
-				if(flag) {
-					return invalue;
-				} else {
-					alert("返回值错误");
-					return invalue;
-				}
-
-			};
-
-			// 取下行值
-			function getoutvalue(hostid) {
-				var flag;
-				var invalue;
-				var gethostinfo = {
-					"jsonrpc": "2.0",
-					"method": "item.get",
-					"params": {
-						"output": "extend",
-						"hostids": hostid, //result.result[0].hosts[j].hostid,
-						"search": {
-							"key_": "net.if.out"
-						},
-						"sortfield": "name"
-					},
-					"auth": auth,
-					"id": 1
-				}
-				$.ajax({
-
-					type: "post",
-					async: false,
-					contentType: "application/json;charset=utf-8",
-
-					url: "http://123.207.235.243/api_jsonrpc.php",
-
-					data: JSON.stringify(gethostinfo),
-
-					dataType: "json",
-
-					success: function(result) {
-
-						if(result != null) {
-							invalue = result.result[0].lastvalue;
-							flag = true;
-						} else {
-							invalue = "--";
-							flag = false;
-						}
-
-					}
-
-				});
-
-				if(flag) {
-					return invalue;
-				} else {
-					alert("返回值错误");
-					return invalue;
-				}
-
-			};
-
+			});
 			/*底部导航*/
 			$(function() {
 				$(".footer-container div").eq(0).css({
@@ -434,7 +353,59 @@
 				});
 			});
 		</script>
+		<script>
+			
+			
+		//获取上行 值
+function getinvalue(hostid ){
+	var gethostinfo = {
+									"jsonrpc": "2.0",
+									"method": "item.get",
+									"params": {
+										"output": "extend",
+										"hostids": 10108,//result.result[0].hosts[j].hostid,
+										"search": {
+											"name": "流量流入"
+										},
+										"sortfield": "name"
+									},
+									"auth": auth,
+									"id": 1
+								}
+								$.ajax({
 
+									type: "post",
+
+									contentType: "application/json;charset=utf-8",
+
+									url: "http://123.207.235.243/api_jsonrpc.php",
+
+									data: JSON.stringify(gethostinfo),
+
+									dataType: "json",
+									async: false,
+
+									complete: function() {},
+
+									success: function(data) {
+										console.log(data)
+										alert(data.result[0].lastvalue);
+                                                        return  data.result[0].lastvalue;
+                                                       
+						
+										//		alert(result.result[0].hosts[j].hostid +result.result[0].hosts[j].host);
+
+									}
+
+								});
+	
+	
+
+	
+	
+	
+}
+</script>
 	</body>
 
 </html>
