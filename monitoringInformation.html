@@ -64,12 +64,12 @@
                         <span class="text-right">12%</span>
                     </li>
                     <li class="mycontainer-specific">
-                        <span class="text-left">当前接收速率</span>
-                        <span class="text-right">12%</span>
+                        <span class="text-left" >当前接收速率</span>
+                        <span class="text-right" id="invalue">12%</span>
                     </li>
                     <li class="mycontainer-specific">
                         <span class="text-left">当前发送速率</span>
-                        <span class="text-right">12%</span>
+                        <span class="text-right"id="outvalue">12%</span>
                     </li>
                     <li class="mycontainer-specific">
                         <span class="text-left">IP</span>
@@ -109,6 +109,94 @@
 
 
     <script>
+   /* var  cpuvalues;
+    var  memoryvalues;
+           var Entity;*/
+        /* 取值时：把获取到的Json字符串转换回对象*/
+       var Entity = {
+    name:1,//主机名
+    id: 1,//id
+    invalue:1,//上行
+    outvalue:1,//下行
+    auth:1
+};
+var JsonStr =sessionStorage.getItem("json");
+alert(JsonStr)
+ Entity = JSON.parse(JsonStr);
+
+alert(Entity.invalue);
+
+/*
+$(function () {
+		
+				var flag;
+				var cpuvalue;
+				var gethostinfo = {
+					"jsonrpc": "2.0",
+					"method": "item.get",
+					"params": {
+						"output": "extend",
+						"hostids": Entity.hostid, //result.result[0].hosts[j].hostid,
+						"search": {
+							"key_": "memory"
+						},
+						"sortfield": "name"
+					},
+					"auth": Entity.auth,
+					"id": 1
+				}
+				$.ajax({
+
+					type: "post",
+					async: false,
+					contentType: "application/json;charset=utf-8",
+
+					url: "http://123.207.235.243/api_jsonrpc.php",
+
+					data: JSON.stringify(gethostinfo),
+
+					dataType: "json",
+
+					success: function(result) {
+$("#invalue").text(Entity.invalue);
+						if(result != null) {
+							
+							cpuvalue = result.result[0].lastvalue;
+							flag = true;
+						} else {
+							cpuvalue = "--";
+							flag = false;
+						}
+
+					}
+
+				});
+
+				if(flag) {
+$("#invalue").text(Entity.invalue);
+					return invalue;
+				} else {
+					alert("返回值错误");
+					return invalue;
+				}
+
+			
+
+})
+
+
+*/
+
+
+
+
+
+
+
+
+
+    
+    
         /*底部导航*/
         $(function () {
             $(".footer-container div").eq(0).css({
@@ -133,6 +221,11 @@
             tipsWord: {
                 content: "CPU"
             },
+            
+         /*  value :{
+                "current": 10,
+                 "highest": 80
+                       }
             /*grads: {
              ratio: 0.8
              },
@@ -148,12 +241,19 @@
             tipsWord: {
                 content: "内存"
             },
-            /*grads: {
+            
+      /*     value :{
+  "current": 100,
+  "highest": 80
+}
+
+            grads: {
              ratio: 0.8
              },
              gaps: {
              length: [2, 2]
              },*/
+            
             url: "json/test.json"
         });
         console.log(obj2);

@@ -17,8 +17,8 @@
             isCurrent: true,
             isAnimation: true,
             value: {
-                current: 0,
-                highest: 0
+                current: 10,
+                highest: 10
             },
             url: "",
             percentWord: {

@@ -367,6 +367,13 @@
         </div>
     </div>
     <script>
+    var  Entity;
+    var userJsonStr = sessionStorage.getItem('json');
+ Entity = JSON.parse(userJsonStr);
+alert(Entity.name); 
+
+
+
         $("#inp").click(function () {
             $("#btn_no").css({
                 background:"#1ab301",

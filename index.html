@@ -276,7 +276,8 @@
 
 									+
 									"<img src='img/home_icon_switch.png'>" +
-									"<a href='twoStageSwitch.html'>" +
+									//"<a href='javascript:void(0);' onclick=test("+hostName+ ","+result.result[0].hosts[j].hostid+")>" +
+									"<a href='javascript:void(0);' value="+hostName+" onclick=test('"+hostName+"',"+result.result[0].hosts[j].hostid+','+invalue+','+outvalue+")>" +
 									"<span>" + hostName + "</span></a>" +
 									"	</div>" +
 									"<div class='mycontainer-specific-middle'>" +
@@ -309,6 +310,23 @@
 				$("#inTotal").text(inTotal.toFixed(2));
 				$("#outTotal").text(outTotal.toFixed(2));
 			}
+
+function test(hostName,hostid,invalue,outvalue){
+
+var Entity = {
+    name:hostName,//主机名
+    id: hostid,//id
+    invalue:invalue,//上行
+    outvalue:outvalue,//下行
+    auth:auth
+};
+alert(JSON.stringify(Entity));
+	// 存储值：将对象转换为Json字符串
+sessionStorage.setItem("json", JSON.stringify(Entity));
+	
+}
+
+
 
 			//取上行值方法 
 			function getinvalue(hostid) {
