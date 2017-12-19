@@ -367,10 +367,11 @@
         </div>
     </div>
     <script>
-    var  Entity;
+ /*   var  Entity;
     var userJsonStr = sessionStorage.getItem('json');
- Entity = JSON.parse(userJsonStr);
-alert(Entity.name); 
+ Entity = JSON.parse(userJsonStr);*/
+if(window.sessionStorage)
+alert(sessionStorage.getItem('abc')+localStorage.getItem('bb')); 
 
 
 

@@ -109,10 +109,16 @@
 
 
     <script>
-   /* var  cpuvalues;
-    var  memoryvalues;
-           var Entity;*/
-        /* 取值时：把获取到的Json字符串转换回对象*/
+				            
+				            var Hostcpuvalue;
+				          //空闲内存
+							var availableMemory ;
+							//总内存
+							var totalMemory ;
+							//内存使用率百分比
+					       var  Memoryrate;
+					       //CPU使用率
+					       var  CPUrate;
        var Entity = {
     name:1,//主机名
     id: 1,//id
@@ -120,23 +126,22 @@
     outvalue:1,//下行
     auth:1
 };
-var JsonStr =sessionStorage.getItem("json");
+var JsonStr =localStorage.getItem("json");
 alert(JsonStr)
  Entity = JSON.parse(JsonStr);
 
-alert(Entity.invalue);
 
-/*
 $(function () {
 		
-				var flag;
-				var cpuvalue;
-				var gethostinfo = {
+				            var flag;
+//---------------------------------------------查询内存使用率start----------------------------------------------------------------------				
+				
+				var getMemoryinfo = {
 					"jsonrpc": "2.0",
 					"method": "item.get",
 					"params": {
 						"output": "extend",
-						"hostids": Entity.hostid, //result.result[0].hosts[j].hostid,
+						"hostids": Entity.id,
 						"search": {
 							"key_": "memory"
 						},
@@ -153,18 +158,29 @@ $(function () {
 
 					url: "http://123.207.235.243/api_jsonrpc.php",
 
-					data: JSON.stringify(gethostinfo),
+					data: JSON.stringify(getMemoryinfo),
 
 					dataType: "json",
 
 					success: function(result) {
-$("#invalue").text(Entity.invalue);
+
 						if(result != null) {
+							//查询内存  返回数组集合   下标1位当前空闲内存   2    总内存
 							
-							cpuvalue = result.result[0].lastvalue;
+							//空闲内存
+							 availableMemory = result.result[0].lastvalue;
+							//总内存
+							 totalMemory = result.result[1].lastvalue;
+							//使用率百分比
+					        Memoryrate= (1-(availableMemory/totalMemory));
+					     
+					      //   保留一位小数
+					     Memoryrate=(Memoryrate*100).toFixed(1);
+							
+							alert("内存比例:  "+Memoryrate)
 							flag = true;
 						} else {
-							cpuvalue = "--";
+							HsotMemoryvalue = "--";
 							flag = false;
 						}
 
@@ -174,28 +190,115 @@ $("#invalue").text(Entity.invalue);
 
 				if(flag) {
 $("#invalue").text(Entity.invalue);
-					return invalue;
+$("#outvalue").text(Entity.outvalue);
+
+				
 				} else {
 					alert("返回值错误");
 					return invalue;
 				}
+//---------------------------------------------查询内存使用率END----------------------------------------------------------------------				
+				
+				
+//---------------------------------------------查询CPU使用率start----------------------------------------------------------------------
+				var getCPUinfo = {
+					"jsonrpc": "2.0",
+					"method": "item.get",
+					"params": {
+						"output": "extend",
+						"hostids": Entity.id,
+						"search": {
+							"key_": "system.cpu.util[,idle]"
+						},
+						"sortfield": "name"
+					},
+					"auth": Entity.auth,
+					"id": 1
+				}
+				$.ajax({
 
-			
+					type: "post",
+					async: false,
+					contentType: "application/json;charset=utf-8",
 
+					url: "http://123.207.235.243/api_jsonrpc.php",
+
+					data: JSON.stringify(getCPUinfo),
+
+					dataType: "json",
+
+					success: function(result) {
+
+						if(result != null) {
+							//查询CPU  
+							alert(result.result[0].lastvalue)
+							
+							CPUrate=100-result.result[0].lastvalue;
+
+					      //   保留一位小数
+					     CPUrate=CPUrate.toFixed(1);
+							
+						//	alert("CPU使用率:  "+CPUrate)
+							flag = true;
+						} else {
+							HsotMemoryvalue = "--";
+							flag = false;
+						}
+
+					}
+
+				});
+
+//---------------------------------------------获取CPU使用率end----------------------------------------------------------------------
+	
+        /*canvas画图开始*/
+        let obj1 = new LoadingCanvas({
+            dom: "#myCanvas1",
+            innerRound: 75 ,
+            highestColor: "#FEA81A",
+            currentColor: "#4cfd64",
+            tipsWord: {
+                content: "CPU"
+            },
+            
+           value :{
+                "current": CPUrate,
+                 "highest": 80
+                       }
+            /*grads: {
+             ratio: 0.8
+             },
+             gaps: {
+             length: [2, 2]
+             },
+            url: "json/test.json"*/
+        });
+        console.log(obj1);
+        let obj2 = new LoadingCanvas({
+            dom: "#myCanvas2",
+            innerRound: 75,
+            tipsWord: {
+                content: "内存"
+            },
+            
+          value :{
+  "current": Memoryrate,
+  "highest": 80
+}
+/* 
+            grads: {
+             ratio: 0.8
+             },
+             gaps: {
+             length: [2, 2]
+             },
+            
+            url: "json/test.json"*/
+        });
+        console.log(obj2);
 })
 
 
-*/
-
-
-
-
-
-
-
-
-
-    
     
         /*底部导航*/
         $(function () {
@@ -212,51 +315,7 @@ $("#invalue").text(Entity.invalue);
             });
         });
 
-        /*canvas画图开始*/
-        let obj1 = new LoadingCanvas({
-            dom: "#myCanvas1",
-            innerRound: 75 ,
-            highestColor: "#FEA81A",
-            currentColor: "#4cfd64",
-            tipsWord: {
-                content: "CPU"
-            },
-            
-         /*  value :{
-                "current": 10,
-                 "highest": 80
-                       }
-            /*grads: {
-             ratio: 0.8
-             },
-             gaps: {
-             length: [2, 2]
-             },*/
-            url: "json/test.json"
-        });
-        console.log(obj1);
-        let obj2 = new LoadingCanvas({
-            dom: "#myCanvas2",
-            innerRound: 75,
-            tipsWord: {
-                content: "内存"
-            },
-            
-      /*     value :{
-  "current": 100,
-  "highest": 80
-}
 
-            grads: {
-             ratio: 0.8
-             },
-             gaps: {
-             length: [2, 2]
-             },*/
-            
-            url: "json/test.json"
-        });
-        console.log(obj2);
     </script>
 </body>
 </html>
