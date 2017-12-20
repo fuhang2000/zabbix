@@ -22,7 +22,7 @@
 		<script type="text/javascript">
 			//获取上行 值
 
-			}
+			
 		</script>
 		<script type="text/javascript">
 			var auth;
@@ -85,7 +85,7 @@
 
 								//  alert(result.result[1].name)
 								//获取主机名 循环添加到 ul中
-								for(var i = 0; i <= result.result.length; i++) {
+								for(var i = 0; i < result.result.length; i++) {
 									var industry = result.result[i];
 									$("#myul").append(" <li value=" + industry.name + ">" + industry.name + "</li>");
 								}
@@ -248,10 +248,10 @@
 					success: function(result) {
 
 						//获取学校群名 循环添加到 ul中
-						for(var i = 0; i <= result.result.length; i++) {
+						for(var i = 0; i < result.result.length; i++) {
 							var industry = result.result[i];
 							//获取主机hostid   result.result[0].hosts 是学校群集合
-							for(var j = 0; j <= result.result[0].hosts.length; j++) {
+							for(var j = 0; j < result.result[0].hosts.length; j++) {
 								//终端主机名
 								var hostName = result.result[0].hosts[j].host;
 
@@ -323,6 +323,7 @@ var Entity = {
 alert(JSON.stringify(Entity));
 
 localStorage.setItem('json', JSON.stringify(Entity));
+window.location="monitoringInformation.html";
 	
 }
 
@@ -361,7 +362,17 @@ localStorage.setItem('json', JSON.stringify(Entity));
 					success: function(result) {
 
 						if(result != null) {
-							invalue = result.result[0].lastvalue;
+							
+							
+									
+								invalue = result.result[0].lastvalue;
+				
+							
+							
+							
+							
+							
+							
 							flag = true;
 						} else {
 							invalue = "--";

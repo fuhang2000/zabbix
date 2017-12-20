@@ -49,11 +49,11 @@
                 <ul>
                     <li class="mycontainer-specific">
                         <span class="text-left">最大响应时间</span>
-                        <span class="text-right">56S</span>
+                        <span class="text-right" id="maxicmppingsec">0ms</span>
                     </li>
                     <li class="mycontainer-specific">
                         <span class="text-left">当前响应时间</span>
-                        <span class="text-right">6S</span>
+                        <span class="text-right" id="minicmppingsec">0ms</span>
                     </li>
                     <li class="mycontainer-specific">
                         <span class="text-left">最大当日掉包率</span>
@@ -73,7 +73,7 @@
                     </li>
                     <li class="mycontainer-specific">
                         <span class="text-left">IP</span>
-                        <span class="text">127.0.0.1</span>
+                        <span class="text" id="hostip">127.0.0.1</span>
                     </li>
                 </ul>
             </div>
@@ -119,6 +119,19 @@
 					       var  Memoryrate;
 					       //CPU使用率
 					       var  CPUrate;
+					       
+					       //响应时间
+					       var  maxicmppingsec;
+					       var  minicmppingsec;
+					       //丢包率
+					       var maxicmppingloss;
+					       
+					       var minicmppingloss;
+					       
+					       //响应时间历史记录id
+					     var  icmppingSecitemid;
+					     
+					       
        var Entity = {
     name:1,//主机名
     id: 1,//id
@@ -127,11 +140,55 @@
     auth:1
 };
 var JsonStr =localStorage.getItem("json");
-alert(JsonStr)
+//alert(JsonStr)
  Entity = JSON.parse(JsonStr);
 
 
 $(function () {
+	//---------------------------------------------获取 ip地址-start------------------------------------------------
+	
+
+		var gethostipinfo ={
+    "jsonrpc": "2.0",
+    "method": "hostinterface.get",
+    "params": {
+        "output": "extend",
+        "hostids": Entity.id,
+    },
+   "auth": Entity.auth,
+    "id": 1
+}
+	$.ajax({
+		
+		type: "post",
+					async: false,
+					contentType: "application/json;charset=utf-8",
+
+					url: "http://123.207.235.243/api_jsonrpc.php",
+
+					data: JSON.stringify(gethostipinfo),
+
+					dataType: "json",
+
+					success: function(result) {
+						
+					$("#hostip").text(result.result[0].ip)
+					
+					}
+					
+		
+		
+		
+		
+		
+		
+	});
+//---------------------------------------------获取 ip地址-end------------------------------------------------
+	
+	
+	
+	
+	
 		
 				            var flag;
 //---------------------------------------------查询内存使用率start----------------------------------------------------------------------				
@@ -169,15 +226,29 @@ $(function () {
 							
 							//空闲内存
 							 availableMemory = result.result[0].lastvalue;
+							 var f=(availableMemory/1024).toFixed(0);
 							//总内存
 							 totalMemory = result.result[1].lastvalue;
+						
+						
+						var t=(totalMemory/1024).toFixed(0);
+							
+							
+							
+							//          linux返回2 结果    windows 3 结果  
+							if(f>t){
+							 	
+							 	 totalMemory = result.result[2].lastvalue;
+						
+							 }
+							 
 							//使用率百分比
 					        Memoryrate= (1-(availableMemory/totalMemory));
-					     
+					   
 					      //   保留一位小数
 					     Memoryrate=(Memoryrate*100).toFixed(1);
 							
-							alert("内存比例:  "+Memoryrate)
+							
 							flag = true;
 						} else {
 							HsotMemoryvalue = "--";
@@ -189,13 +260,13 @@ $(function () {
 				});
 
 				if(flag) {
-$("#invalue").text(Entity.invalue);
-$("#outvalue").text(Entity.outvalue);
+$("#invalue").text(Entity.invalue+"kb/s");
+$("#outvalue").text(Entity.outvalue+"kb/s");
 
 				
 				} else {
-					alert("返回值错误");
-					return invalue;
+					alert("1返回值错误");
+					
 				}
 //---------------------------------------------查询内存使用率END----------------------------------------------------------------------				
 				
@@ -231,7 +302,7 @@ $("#outvalue").text(Entity.outvalue);
 
 						if(result != null) {
 							//查询CPU  
-							alert(result.result[0].lastvalue)
+							//alert(result.result[0].lastvalue)
 							
 							CPUrate=100-result.result[0].lastvalue;
 
@@ -250,6 +321,11 @@ $("#outvalue").text(Entity.outvalue);
 				});
 
 //---------------------------------------------获取CPU使用率end----------------------------------------------------------------------
+	
+	
+	
+
+	
 	
         /*canvas画图开始*/
         let obj1 = new LoadingCanvas({
@@ -273,7 +349,7 @@ $("#outvalue").text(Entity.outvalue);
              },
             url: "json/test.json"*/
         });
-        console.log(obj1);
+        //console.log(obj1);
         let obj2 = new LoadingCanvas({
             dom: "#myCanvas2",
             innerRound: 75,
@@ -295,7 +371,132 @@ $("#outvalue").text(Entity.outvalue);
             
             url: "json/test.json"*/
         });
-        console.log(obj2);
+       // console.log(obj2);
+        
+        
+        
+        
+        
+        	//---------------------------------------------查询当前响应时间start----------------------------------------------------------------------
+				var geticmppingSecinfo = {
+					"jsonrpc": "2.0",
+					"method": "item.get",
+					"params": {
+						"output": "extend",
+						"hostids": Entity.id,
+						"search": {
+							"key_": "icmppingsec"
+						},
+						"sortfield": "name"
+					},
+					"auth": Entity.auth,
+					"id": 1
+				}
+				$.ajax({
+
+					type: "post",
+					async: false,
+					contentType: "application/json;charset=utf-8",
+
+					url: "http://123.207.235.243/api_jsonrpc.php",
+
+					data: JSON.stringify(geticmppingSecinfo),
+
+					dataType: "json",
+
+					success: function(result) {
+
+						if(result != null) {
+							//查询响应时间
+							//alert(result.result[0].lastvalue)
+							
+							icmppingsec=result.result[0].lastvalue;
+							
+							icmppingSecitemid=result.result[0].itemid;
+
+					      //   保留一位小数
+					     icmppingsec=icmppingsec*1000;
+					//     alert(icmppingsec)
+					     $("#minicmppingsec").text(icmppingsec+"ms");
+
+							flag = true;
+							
+	//---------------------------------------------查询最大响应时间start----------------------------------------------------------------------
+			
+			if(flag){
+				
+				
+			var getmaxicmppingSecinfo = {
+					"jsonrpc": "2.0",
+					"method": "history.get",
+					"params": {
+						        "output": "extend",
+	                            "history": 0,
+	                            "itemids": icmppingSecitemid,
+	                            "sortfield": "clock",
+	                           	"sortorder": "DESC",
+	       						"limit": 500
+					},
+					"auth": Entity.auth,
+					"id": 1
+				}
+				$.ajax({
+
+					type: "post",
+					async: false,
+					contentType: "application/json;charset=utf-8",
+
+					url: "http://123.207.235.243/api_jsonrpc.php",
+
+					data: JSON.stringify(getmaxicmppingSecinfo),
+
+					dataType: "json",
+
+					success: function(result) {
+					//	alert('数据成功返回'+result)
+                         
+						if(result != null) {
+							
+							var maxvalue=result.result[0].value;
+						//	alert("当前值:"+maxvalue+"数组长度"+result.result[5].value);
+							for(var mm = 1; mm < result.result.length; mm++){
+							
+							var temp = result.result[mm].value;
+							
+							if(maxvalue*1<temp*1){
+								
+								maxvalue=temp;
+								
+					
+								}
+							}
+				
+		            $("#maxicmppingsec").text(maxvalue*1000+"ms");
+		            
+						} 
+						}
+
+					
+
+				});
+
+//---------------------------------------------获取最大响应时间使用率end----------------------------------------------------------------------
+}
+							
+						} else {
+							HsotMemoryvalue = "--";
+							flag = false;
+						}
+
+					}
+
+				});
+
+//---------------------------------------------获取当前响应使用率end----------------------------------------------------------------------
+
+							
+					
+        
 })
 
 
