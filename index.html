@@ -256,11 +256,11 @@
 								var hostName = result.result[0].hosts[j].host;
 
 								//主机上行流量值
-								invalue = (getinvalue(result.result[0].hosts[j].hostid) / 1024).toFixed(2);
+								invalue = (getinvalue(result.result[0].hosts[j].hostid) / 1000).toFixed(2);
 
 								//主机下行流量值
 								var outvalue;
-								outvalue = (getoutvalue(result.result[0].hosts[j].hostid) / 1024).toFixed(2);
+								outvalue = (getoutvalue(result.result[0].hosts[j].hostid) / 1000).toFixed(2);
 
 								inTotal = inTotal + invalue * 1;
 
@@ -367,7 +367,29 @@ window.location="monitoringInformation.html";
 									
 								invalue = result.result[0].lastvalue;
 				
-							
+							if(invalue=="0"){
+								
+								for (var  ii=1;ii<result.result.length;ii++) {
+									
+									if (result.result[ii].lastvalue!="0"){
+										//alert("结果"+result.result[ii].lastvalue)
+										
+										invalue=result.result[ii].lastvalue;
+										break;
+									}else
+									{
+										
+										invalue = result.result[0].lastvalue;
+									}
+									
+									
+									
+									
+									
+								}
+								
+								
+							}
 							
 							
 							
@@ -398,7 +420,7 @@ window.location="monitoringInformation.html";
 			// 取下行值
 			function getoutvalue(hostid) {
 				var flag;
-				var invalue;
+				var outvalue;
 				var gethostinfo = {
 					"jsonrpc": "2.0",
 					"method": "item.get",
@@ -428,10 +450,29 @@ window.location="monitoringInformation.html";
 					success: function(result) {
 
 						if(result != null) {
-							invalue = result.result[0].lastvalue;
+							outvalue = result.result[0].lastvalue;
+					if(outvalue=="0"){
+								
+								for (var  ii=1;ii<result.result.length;ii++) {
+									
+									while (result.result[ii].lastvalue!="0"){
+										//alert("结果"+result.result[ii].lastvalue)
+										
+										outvalue=result.result[ii].lastvalue;
+										break;
+									}
+									
+									
+									
+									
+									
+								}
+								
+								
+							}
 							flag = true;
 						} else {
-							invalue = "--";
+							outvalue = "--";
 							flag = false;
 						}
 
@@ -440,10 +481,10 @@ window.location="monitoringInformation.html";
 				});
 
 				if(flag) {
-					return invalue;
+					return outvalue;
 				} else {
 					alert("返回值错误");
-					return invalue;
+					return outvalue;
 				}
 
 			};
