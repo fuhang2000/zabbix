@@ -16,7 +16,7 @@
 
 
     <div class="header">
-        <a href="javascript:history.back(-1)"><img class="img1" src="img/nav_icon_back_normal.png"></a>
+        <a href="index.html"><img class="img1" src="img/nav_icon_back_normal.png"></a>
         <span>监测信息</span>
         <a href="setting.html"><img class="img2" src="img/nav_icon_set_normal.png"></a>
     </div>
@@ -58,11 +58,11 @@
                     </li>
                     <li class="mycontainer-specific">
                         <span class="text-left">最大当日掉包率</span>
-                        <span class="text-right">27%</span>
+                        <span class="text-right" id="maxicmppingloss">0</span>
                     </li>
                     <li class="mycontainer-specific">
                         <span class="text-left">当前当日掉包率</span>
-                        <span class="text-right">12%</span>
+                        <span class="text-right" id="minicmppingloss">0</span>
                     </li>
                     <li class="mycontainer-specific">
                         <span class="text-left" >当前接收速率</span>
@@ -132,8 +132,12 @@
 					       //响应时间历史记录id
 					     var  icmppingSecitemid;
 					     
+					     //丢包率历史记录id
+					      var  icmppingLossitemid;
+					     
 					       
        var Entity = {
+       	school:1,
     name:1,//主机名
     id: 1,//id
     invalue:1,//上行
@@ -442,7 +446,7 @@ $("#outvalue").text(Entity.outvalue+"kb/s");
 			
 			if(flag){
 				
-				
+			
 			var getmaxicmppingSecinfo = {
 					"jsonrpc": "2.0",
 					"method": "history.get",
@@ -515,6 +519,145 @@ $("#outvalue").text(Entity.outvalue+"kb/s");
 					
         
 })
+
+
+
+
+
+
+
+
+
+
+
+
+
+        	//---------------------------------------------查询当丢包率start----------------------------------------------------------------------
+				var geticmppingSecinfo = {
+					"jsonrpc": "2.0",
+					"method": "item.get",
+					"params": {
+						"output": "extend",
+						"hostids": Entity.id,
+						"search": {
+							"key_": "icmppingloss"
+						},
+						"sortfield": "name"
+					},
+					"auth": Entity.auth,
+					"id": 1
+				}
+				$.ajax({
+
+					type: "post",
+					async: false,
+					contentType: "application/json;charset=utf-8",
+
+					url: "http://123.207.235.243/api_jsonrpc.php",
+
+					data: JSON.stringify(geticmppingSecinfo),
+
+					dataType: "json",
+
+					success: function(result) {
+
+						if(result != null) {
+							//查询响应时间
+							//alert(result.result[0].lastvalue)
+							
+							minicmppingloss=result.result[0].lastvalue;
+							
+							icmppingLossitemid=result.result[0].itemid;
+
+					      //   保留一位小数
+					     minicmppingloss=(minicmppingloss*1000).toFixed();
+					//     alert(icmppingsec)
+					     $("#minicmppingloss").text(minicmppingloss+"%");
+
+							flag = true;
+							
+	//---------------------------------------------查询历史丢包率start----------------------------------------------------------------------
+			
+			if(flag){
+				
+			
+			var getmaxicmppinglossinfo = {
+					"jsonrpc": "2.0",
+					"method": "history.get",
+					"params": {
+						        "output": "extend",
+	                            "history": 0,
+	                            "itemids": icmppingLossitemid,
+	                            "sortfield": "clock",
+	                           	"sortorder": "DESC",
+	       						"limit": 100
+					},
+					"auth": Entity.auth,
+					"id": 1
+				}
+				$.ajax({
+
+					type: "post",
+					async: false,
+					contentType: "application/json;charset=utf-8",
+
+					url: "http://123.207.235.243/api_jsonrpc.php",
+
+					data: JSON.stringify(getmaxicmppinglossinfo),
+
+					dataType: "json",
+
+					success: function(result) {
+					//	alert('数据成功返回'+result)
+                         
+						if(result != null) {
+							
+							var maxvalue=result.result[0].value;
+						//	alert("当前值:"+maxvalue+"数组长度"+result.result[5].value);
+							for(var mm = 1; mm < result.result.length; mm++){
+							
+							var temp = result.result[mm].value;
+							
+							if(maxvalue*1<temp*1){
+								
+								maxvalue=temp;
+								
+					
+								}
+							}
+				maxvalue=(maxvalue*1000).toFixed();
+		            $("#maxicmppingloss").text(maxvalue+"%");
+		            
+						} 
+						}
+
+					
+
+				});
+
+//---------------------------------------------获取最大丢包率end----------------------------------------------------------------------
+}
+							
+						} else {
+							HsotMemoryvalue = "--";
+							flag = false;
+						}
+
+					}
+
+				});
+
+//---------------------------------------------获取当前丢包率end----------------------------------------------------------------------
+
+							
+
+
+
+
+
+
+
+
 
 
     

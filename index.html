@@ -21,8 +21,6 @@
         <script type="text/javascript" src="js/jquery-2.1.1.min.js"></script>-->
 		<script type="text/javascript">
 			//获取上行 值
-
-			
 		</script>
 		<script type="text/javascript">
 			var auth;
@@ -186,31 +184,32 @@
 		<!--底部   结束-->
 
 		<script>
-			var hostname;
+			var schoolname;
+			var schooltemp;
+			
+			
+		$(function(){
+			
+		var JsonStr =localStorage.getItem("json");
+//alert(JsonStr)
 
-			/*上面选择学校的地方*/
-			$("#select").bind('click', function() {
-				//            alert(1);
-				document.getElementById("bg").style.display = "block";
+var Entitys = {
+    school:1,
+    name:1,//主机名
+    id: 1,//id
+    invalue:1,//上行
+    outvalue:1,//下行
+    auth:1
+};	
 
-				document.getElementById("myul").style.display = "block";
-				$("#myul li").bind('click', function() {
-					hostname = $(this).text();
-					$("#school").text($(this).text());
-					document.getElementById("bg").style.display = "none";
-					document.getElementById("myul").style.display = "none";
+ Entitys = JSON.parse(JsonStr);	
+ if(Entitys!=null){
+if(Entitys.school!=1){
+	//alert(Entitys.school);
+auth=Entitys.auth;
 
-					if(hostname != "选择主机群") {
-                        //清除当前的ul 值
-                        $("#hostul li").remove();
-						gethostid();
-					}
-
-				});
-			});
-
-			//获取hostid 查询出 这个主机的 id 和可见名
-			function gethostid() {
+//获取hostid 查询出 这个主机的 id 和可见名
+			$(function(){
 				//总流入,出变量
 				var inTotal = 0;
 				var outTotal = 0;
@@ -222,12 +221,12 @@
 						//条件 : 群主名为 hostname  查询出 这个主机的 id 和可见名
 						"filter": {
 							"name": [
-								hostname
+								Entitys.school
 							]
 						},
-						"selectHosts": ["hostid", "host"]
+						"selectHosts": ["hostid", "name"]
 					},
-					"auth": auth,
+					"auth": Entitys.auth,
 					"id": 1
 
 				};
@@ -253,14 +252,14 @@
 							//获取主机hostid   result.result[0].hosts 是学校群集合
 							for(var j = 0; j < result.result[0].hosts.length; j++) {
 								//终端主机名
-								var hostName = result.result[0].hosts[j].host;
-
+								var hostName = result.result[0].hosts[j].name;
+//alert(result.result[0].hosts[j].hostid)
 								//主机上行流量值
-								invalue = (getinvalue(result.result[0].hosts[j].hostid) / 1000).toFixed(2);
+								invalue = (getinvalue(result.result[0].hosts[j].hostid) / 1000).toFixed(1);
 
 								//主机下行流量值
 								var outvalue;
-								outvalue = (getoutvalue(result.result[0].hosts[j].hostid) / 1000).toFixed(2);
+								outvalue = (getoutvalue(result.result[0].hosts[j].hostid) / 1000).toFixed(1);
 
 								inTotal = inTotal + invalue * 1;
 
@@ -277,7 +276,7 @@
 									+
 									"<img src='img/home_icon_switch.png'>" +
 									//"<a href='javascript:void(0);' onclick=test("+hostName+ ","+result.result[0].hosts[j].hostid+")>" +
-									"<a href='javascript:void(0);' value="+hostName+" onclick=test('"+hostName+"',"+result.result[0].hosts[j].hostid+','+invalue+','+outvalue+")>" +
+"<a href='javascript:void(0);' value=" + hostName + " onclick=test('" + hostName + "','" + result.result[0].hosts[j].hostid + "','" + invalue + "','" +outvalue +"','"+Entitys.school+"')>" +
 									"<span>" + hostName + "</span></a>" +
 									"	</div>" +
 									"<div class='mycontainer-specific-middle'>" +
@@ -307,27 +306,158 @@
 
 				})
 
-				$("#inTotal").text(inTotal.toFixed(2));
-				$("#outTotal").text(outTotal.toFixed(2));
+				$("#inTotal").text(inTotal.toFixed(1));
+				$("#outTotal").text(outTotal.toFixed(1));
+			});
+
+
+
+}
+}
+});
+			/*上面选择学校的地方*/
+			$("#select").bind('click', function() {
+				//            alert(1);
+				document.getElementById("bg").style.display = "block";
+
+				document.getElementById("myul").style.display = "block";
+				$("#myul li").bind('click', function() {
+
+					
+
+					$("#school").text($(this).text());
+					schoolname = $(this).text();
+					
+					document.getElementById("bg").style.display = "none";
+					document.getElementById("myul").style.display = "none";
+
+					if(schoolname != "选择主机群") {
+						//清除当前的ul 值
+						$("#hostul li").remove();
+						gethostid();
+					}
+
+				});
+			});
+
+			//获取hostid 查询出 这个主机的 id 和可见名
+			function gethostid() {
+				//总流入,出变量
+				var inTotal = 0;
+				var outTotal = 0;
+				var gethost = {
+					"jsonrpc": "2.0",
+					"method": "hostgroup.get",
+					"params": {
+						"output": "extend",
+						//条件 : 群主名为 hostname  查询出 这个主机的 id 和可见名
+						"filter": {
+							"name": [
+								schoolname
+							]
+						},
+						"selectHosts": ["hostid", "name"]
+					},
+					"auth": auth,
+					"id": 1
+
+				};
+
+				$.ajax({
+
+					type: "post",
+
+					contentType: "application/json;charset=utf-8",
+
+					url: "http://123.207.235.243/api_jsonrpc.php",
+
+					data: JSON.stringify(gethost),
+
+					dataType: "json",
+					async: false,
+
+					success: function(result) {
+
+						//获取学校群名 循环添加到 ul中
+						for(var i = 0; i < result.result.length; i++) {
+							var industry = result.result[i];
+							//获取主机hostid   result.result[0].hosts 是学校群集合
+							for(var j = 0; j < result.result[0].hosts.length; j++) {
+								//终端主机名
+								var hostName = result.result[0].hosts[j].name;
+
+								//主机上行流量值
+								invalue = (getinvalue(result.result[0].hosts[j].hostid) / 1000).toFixed(1);
+
+								//主机下行流量值
+								var outvalue;
+								outvalue = (getoutvalue(result.result[0].hosts[j].hostid) / 1000).toFixed(1);
+
+								inTotal = inTotal + invalue * 1;
+
+								outTotal = outTotal + outvalue * 1;
+
+								$("#hostul").append("<a href='twoStageSwitch.html'>"
+
+									+
+									"<li class='mycontainer-specific'>"
+
+									+
+									"<div class='mycontainer-specific-left'>"
+
+									+
+									"<img src='img/home_icon_switch.png'>" +
+									//"<a href='javascript:void(0);' onclick=test("+hostName+ ","+result.result[0].hosts[j].hostid+")>" +
+"<a href='javascript:void(0);' value=" + hostName + " onclick=test('" + hostName + "','" + result.result[0].hosts[j].hostid + "','" + invalue + "','" +outvalue +"','"+schoolname+"')>" +
+									"<span>" + hostName + "</span></a>" +
+									"	</div>" +
+									"<div class='mycontainer-specific-middle'>" +
+									"<img src='img/home_icon_up_green.png'>" +
+									"<span class='text1'>" + invalue + "</span>" +
+									"<span class='text2'>" + 'kb/s' + "</span>" +
+									"</div>" +
+									"<div class='mycontainer-specific-right'>"
+
+									+
+									"<img src='img/home_icon_down_red.png'>" +
+									"	<span class='text1'>" + outvalue + "</span>" +
+									"<span class='text2'>" + 'kb/s' + "</span>" +
+									"</div>" +
+									"</li></a>");
+
+							}
+
+						}
+
+					},
+					error: function(result, status) {
+
+						alert("网络登入错误;")
+
+					}
+
+				})
+
+				$("#inTotal").text(inTotal.toFixed(1));
+				$("#outTotal").text(outTotal.toFixed(1));
 			}
 
-function test(hostName,hostid,invalue,outvalue){
+			function test(hostName, hostid, invalue, outvalue, school) {
 
-var Entity = {
-    name:hostName,//主机名
-    id: hostid,//id
-    invalue:invalue,//上行
-    outvalue:outvalue,//下行
-    auth:auth
-};
-alert(JSON.stringify(Entity));
+				var Entity = {
+					school: school, //学校
+					name: hostName, //主机名
+					id: hostid, //id
+					invalue: invalue, //上行
+					outvalue: outvalue, //下行
+					auth: auth
+				};
+				//alert(JSON.stringify(Entity));
+				localStorage.setItem('hostName', schooltemp);
+				localStorage.setItem('json', JSON.stringify(Entity));
+				window.location = "monitoringInformation.html";
 
-localStorage.setItem('json', JSON.stringify(Entity));
-window.location="monitoringInformation.html";
-	
-}
-
-
+			}
 
 			//取上行值方法 
 			function getinvalue(hostid) {
@@ -362,39 +492,27 @@ window.location="monitoringInformation.html";
 					success: function(result) {
 
 						if(result != null) {
-							
-							
-									
-								invalue = result.result[0].lastvalue;
-				
-							if(invalue=="0"){
-								
-								for (var  ii=1;ii<result.result.length;ii++) {
-									
-									if (result.result[ii].lastvalue!="0"){
+
+							invalue = result.result[0].lastvalue;
+
+							if(invalue == "0") {
+
+								for(var ii = 1; ii < result.result.length; ii++) {
+
+									if(result.result[ii].lastvalue != "0") {
 										//alert("结果"+result.result[ii].lastvalue)
-										
-										invalue=result.result[ii].lastvalue;
+
+										invalue = result.result[ii].lastvalue;
 										break;
-									}else
-									{
-										
+									} else {
+
 										invalue = result.result[0].lastvalue;
 									}
-									
-									
-									
-									
-									
+
 								}
-								
-								
+
 							}
-							
-							
-							
-							
-							
+
 							flag = true;
 						} else {
 							invalue = "--";
@@ -451,24 +569,19 @@ window.location="monitoringInformation.html";
 
 						if(result != null) {
 							outvalue = result.result[0].lastvalue;
-					if(outvalue=="0"){
-								
-								for (var  ii=1;ii<result.result.length;ii++) {
-									
-									while (result.result[ii].lastvalue!="0"){
+							if(outvalue == "0") {
+
+								for(var ii = 1; ii < result.result.length; ii++) {
+
+									while(result.result[ii].lastvalue != "0") {
 										//alert("结果"+result.result[ii].lastvalue)
-										
-										outvalue=result.result[ii].lastvalue;
+
+										outvalue = result.result[ii].lastvalue;
 										break;
 									}
-									
-									
-									
-									
-									
+
 								}
-								
-								
+
 							}
 							flag = true;
 						} else {
@@ -502,7 +615,8 @@ window.location="monitoringInformation.html";
 						background: "#1e69d2"
 					});
 				});
-			});
+			
+			})
 		</script>
 
 	</body>
