@@ -300,7 +300,7 @@ $("#outvalue").text(Entity.outvalue+"kb/s");
 						"output": "extend",
 						"hostids": Entity.id,
 						"search": {
-							"key_": "system.cpu.util[,idle]"
+							"key_": "system.cpu.util[,idle"
 						},
 						"sortfield": "name"
 					},
@@ -492,7 +492,7 @@ $("#outvalue").text(Entity.outvalue+"kb/s");
 								}
 							}
 				
-		            $("#maxicmppingsec").text(maxvalue*1000+"ms");
+		            $("#maxicmppingsec").text((maxvalue*1000).toFixed(1)+"ms");
 		            
 						} 
 						}
