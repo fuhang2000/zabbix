@@ -262,7 +262,7 @@ $(function () {
 					        Memoryrate= ((availableMemory*1)/(totalMemory*1)).toFixed(1);
 					 
 					      //   保留一位小数
-					     Memoryrate=(Memoryrate*100).toFixed(1);
+					     Memoryrate=((1-Memoryrate)*100).toFixed(1);
 						
 								flag = true;
 							 }
@@ -438,7 +438,7 @@ $("#outvalue").text(Entity.outvalue+"kb/s");
 					      //   保留一位小数
 					     icmppingsec=icmppingsec*1000;
 					//     alert(icmppingsec)
-					     $("#minicmppingsec").text(icmppingsec+"ms");
+					     $("#minicmppingsec").text(icmppingsec.toFixed(1)+"ms");
 
 							flag = true;
 							
